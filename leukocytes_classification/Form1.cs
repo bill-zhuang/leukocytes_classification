@@ -32,10 +32,7 @@ namespace leukocytes_classification
             originBmp.Clear();
             OpenFileDialog ofd1 = new OpenFileDialog();
             ofd1.Multiselect = true;
-            ofd1.Filter = "PNG files (*.png)|*.png|" +
-                "Image files (*.jpg,*.png,*.tif,*.bmp,*.gif)|*.jpg;*.png;*.tif;*.bmp;*.gif|JPG fil" +
-                "es (*.jpg)|*.jpg|TIF files (*.tif)|*.tif|BMP files (*.bm" +
-                "p)|*.bmp|GIF files (*.gif)|*.gif";
+            ofd1.Filter = "PNG files (*.png)|*.png";
             //ofd.RestoreDirectory = true;
             ofd1.Title = "Open image";
             ofd1.FileName = "";
