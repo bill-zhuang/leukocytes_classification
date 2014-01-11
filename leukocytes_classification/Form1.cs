@@ -60,7 +60,6 @@ namespace leukocytes_classification
                         }
 
                         Bitmap image = (Bitmap)Bitmap.FromFile(filename);
-                        //originBmp.Add(image);
 
                         string[] data = LeukocytesFeature.FeatureExtraction(image, filename);
 
@@ -72,17 +71,17 @@ namespace leukocytes_classification
                         dgvFeature.Rows.Add(dataRow);
                     }
                 }
+
+                MessageBox.Show("特征提取成功，部分白细胞已分类（单核细胞、淋巴细胞、嗜碱性粒细胞及嗜酸性粒细胞和中性粒细胞大类）,分类结果的图像放在D:/leukocytes目录下");
             }
 
             ofd1.Multiselect = false;
             signNum++;
-
-            MessageBox.Show("特征提取成功，部分白细胞已分类（单核细胞、淋巴细胞、嗜碱性粒细胞及嗜酸性粒细胞和中性粒细胞大类）,分类结果的图像放在D:/leukocytes目录下");
         }
 
         private void btnSaveData_Click(object sender, EventArgs e)
         {
-            if (dgvFeature.Rows.Count > 0)
+            if (dgvFeature.Rows.Count > 1)
             {
                 string filename;
                 SaveFileDialog saveTxt = new SaveFileDialog();
@@ -167,16 +166,29 @@ namespace leukocytes_classification
             }
             else
             {
-                MessageBox.Show("无数据");
+                MessageBox.Show("无数据，请先选择白细胞图片进行特征提取");
             }
 
         }
 
         private void btnSvm_Click(object sender, EventArgs e)
         {
-            LeukocytesFeature.SVMClassification();
-            MessageBox.Show("svm分类成功,分类结果的图像放在D:/leukocytes目录下");
+            if (!File.Exists("TRAIN.txt"))
+            {
+                MessageBox.Show("TRAIN.txt文件不存在");
+            }
+            else 
+            {
+                if (!File.Exists("TEST.txt"))
+                {
+                    MessageBox.Show("TEST.txt文件不存在");
+                }
+                else 
+                {
+                    LeukocytesFeature.SVMClassification();
+                    MessageBox.Show("svm分类成功,分类结果的图像放在D:/leukocytes目录下");
+                }
+            }
         }
-
     }
 }

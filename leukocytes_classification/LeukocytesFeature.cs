@@ -657,7 +657,7 @@ namespace leukocytes_classification
         {
             StreamReader result_stream_reader = new StreamReader(@"results.txt");
             StreamReader picname_stream_reader = new StreamReader(@"picname.txt");
-            //4代表嗜酸性，5代表中性粒
+            
             string path_eosinophils = @"D:\leukocytes\eosinophils\";
             string path_neutrophils = @"D:\leukocytes\neutrophils\";
             if (!System.IO.Directory.Exists(path_eosinophils))
@@ -697,9 +697,9 @@ namespace leukocytes_classification
                     jpg_dest_path = path_neutrophils + jpg_name;
                     png_dest_path = path_neutrophils + png_name;
                 }
-                //copy color
+                //copy color img
                 System.IO.File.Copy(jpg_source_path, jpg_dest_path, true);
-                //copy bin
+                //copy binary img
                 System.IO.File.Copy(png_source_path, png_dest_path, true);
             }
         }
