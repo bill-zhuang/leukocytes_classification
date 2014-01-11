@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.IO;
+using SVM;
 
 namespace leukocytes_classification
 {
@@ -572,7 +573,6 @@ namespace leukocytes_classification
             double area_perimeter_ratio = double.Parse(data_row[2]);
             double moment_first_order = double.Parse(data_row[3]);
 
-            //for the below formulas detail, contact:zstu_bill@yahoo.com
             features[0] = 1.1533 * nucleus_cytoplasm_ratio + 10.8142 * area_perimeter_ratio - 207.7721;
             features[1] = -0.0001 * moment_first_order + 1.6115 * nucleus_cytoplasm_ratio - 3.0691;
             features[2] = -0.0016 * moment_first_order + 10.8142 * area_perimeter_ratio - 207.7721;
@@ -620,6 +620,88 @@ namespace leukocytes_classification
             sourcePath = Path.ChangeExtension(src_path, ".jpg");
             destPath = dest_path + Path.GetFileNameWithoutExtension(src_path) + ".jpg";
             System.IO.File.Copy(sourcePath, destPath, true);
+        }
+
+        public static void SVMClassification()
+        {
+            //读入训练问题
+            Problem train = Problem.Read("TRAIN.txt");
+            RangeTransform range1 = RangeTransform.Compute(train);
+            train = Scaling.Scale(range1, train);
+
+            Problem test = Problem.Read("TEST.txt");
+            RangeTransform range2 = RangeTransform.Compute(test);
+            test = Scaling.Scale(range2, test);
+
+            //构造训练参数：C值-惩罚因子 Gamma值
+            Parameter parameters = new Parameter();
+
+            double C;
+            double Gamma;
+
+            //根据训练样本取得最佳的参数并存储在C值和Gamma值，并保存在params.txt文件中
+            ParameterSelection.Grid(train, parameters, "params.txt", out C, out Gamma);
+            parameters.C = C;
+            parameters.Gamma = Gamma;
+
+            //利用训练样本训练，得到分类model
+            Model model = Training.Train(train, parameters);
+
+            //对测试样本进行分类，并将结果存储在results.txt文件中
+            Prediction.Predict(test, "results.txt", model, false);
+
+            MoveSVMClassifiedFile();
+        }
+
+        private static void MoveSVMClassifiedFile()
+        {
+            StreamReader result_stream_reader = new StreamReader(@"results.txt");
+            StreamReader picname_stream_reader = new StreamReader(@"picname.txt");
+            //4代表嗜酸性，5代表中性粒
+            string path_eosinophils = @"D:\leukocytes\eosinophils\";
+            string path_neutrophils = @"D:\leukocytes\neutrophils\";
+            if (!System.IO.Directory.Exists(path_eosinophils))
+            {
+                System.IO.Directory.CreateDirectory(path_eosinophils);
+            }
+
+            if (!System.IO.Directory.Exists(path_neutrophils))
+            {
+                System.IO.Directory.CreateDirectory(path_neutrophils);
+            }
+
+            string pic_name = "";
+            string jpg_name = "";
+            string png_name = "";
+            string jpg_source_path = "";
+            string png_source_path = "";
+            string jpg_dest_path = "";
+            string png_dest_path = "";
+            while (!result_stream_reader.EndOfStream)
+            {
+                pic_name = picname_stream_reader.ReadLine();
+                jpg_name = pic_name + ".jpg";
+                jpg_source_path = @"D:\leukocytes\eosinophils_and_neutrophils\" + jpg_name;
+
+                png_name = pic_name + ".png";
+                png_source_path = @"D:\leukocytes\eosinophils_and_neutrophils\" + png_name;
+
+                int re = int.Parse(result_stream_reader.ReadLine());
+                if (re == -1)
+                {
+                    jpg_dest_path = path_eosinophils + jpg_name;
+                    png_dest_path = path_eosinophils + png_name;
+                }
+                else if (re == 1)
+                {
+                    jpg_dest_path = path_neutrophils + jpg_name;
+                    png_dest_path = path_neutrophils + png_name;
+                }
+                //copy color
+                System.IO.File.Copy(jpg_source_path, jpg_dest_path, true);
+                //copy bin
+                System.IO.File.Copy(png_source_path, png_dest_path, true);
+            }
         }
     }
 }

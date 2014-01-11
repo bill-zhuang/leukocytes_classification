@@ -1,3 +1,4 @@
 *.suo
 leukocytes_classification/bin
 leukocytes_classification/obj
+!leukocytes_classification/bin/Debug/*.dll

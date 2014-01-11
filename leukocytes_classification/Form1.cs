@@ -68,6 +68,7 @@ namespace leukocytes_classification
                         {
                             dataRow[i] = data[i];
                         }
+                        dataRow[9] = Path.GetFileNameWithoutExtension(filename);
                         dgvFeature.Rows.Add(dataRow);
                     }
                 }
@@ -76,6 +77,7 @@ namespace leukocytes_classification
             ofd1.Multiselect = false;
             signNum++;
 
+            MessageBox.Show("特征提取成功，部分白细胞已分类（单核细胞、淋巴细胞、嗜碱性粒细胞及嗜酸性粒细胞和中性粒细胞大类）,分类结果的图像放在D:/leukocytes目录下");
         }
 
         private void btnSaveData_Click(object sender, EventArgs e)
@@ -85,28 +87,35 @@ namespace leukocytes_classification
                 string filename;
                 SaveFileDialog saveTxt = new SaveFileDialog();
 
-                saveTxt.Filter = "数据文件 (*.txt)|*.txt";
+                //saveTxt.Filter = "数据文件 (*.txt)|*.txt";
 
-                if (saveTxt.ShowDialog() == DialogResult.OK)
+                //if (saveTxt.ShowDialog() == DialogResult.OK)
+                //{
+                try
                 {
-                    try
+                    filename = "TEST.txt";//saveTxt.FileName;
+
+                    if (File.Exists(filename))
                     {
-                        filename = saveTxt.FileName;
+                        File.Delete(filename);
+                    }
 
-                        FileStream fs = new FileStream(filename, FileMode.CreateNew);
+                    FileStream fs = new FileStream(filename, FileMode.CreateNew);
 
-                        for (int j = 0; j < dgvFeature.Rows.Count - 1; j++)
+                    for (int j = 0; j < dgvFeature.Rows.Count - 1; j++)
+                    {
+                        if (dgvFeature[dgvFeature.Columns.Count - 3, j].Value != null)
                         {
-                            string str = dgvFeature[0, j].Value + " ";
+                            string str = "+5 ";// dgvFeature[0, j].Value + " ";
 
-                            for (int i = 1; i < dgvFeature.Columns.Count; i++)
+                            for (int i = 4; i < dgvFeature.Columns.Count - 1; i++)
                             {
                                 if (dgvFeature[i, j].Value != null)
                                 {
-                                    str += i.ToString() + ":" + dgvFeature[i, j].Value + " ";
+                                    str += (i - 3).ToString() + ":" + dgvFeature[i, j].Value + " ";
                                 }
 
-                                if (i == dgvFeature.Columns.Count - 1)
+                                if (i == dgvFeature.Columns.Count - 2)
                                 {
                                     str += "\r\n";
                                 }
@@ -115,23 +124,58 @@ namespace leukocytes_classification
                             byte[] rByte = System.Text.Encoding.Default.GetBytes(str.ToCharArray());
                             fs.Write(rByte, 0, rByte.Length);
                         }
+                        else
+                        {
+                            continue;
+                        }
+                    }
 
-                        fs.Dispose();
-                    }
-                    catch (Exception ex)
+                    fs.Dispose();
+
+                    //save leukocytes image name to picname.txt under bin/debug folder.
+                    filename = "picname.txt";
+                    if (File.Exists(filename))
                     {
-                        MessageBox.Show(ex.Message);
+                        File.Delete(filename);
                     }
-                    finally
+                    fs = new FileStream(filename, FileMode.CreateNew);
+
+                    for (int j = 0; j < dgvFeature.Rows.Count - 1; j++)
                     {
-                        saveTxt.Dispose();
+                        if (dgvFeature[dgvFeature.Columns.Count - 2, j].Value != null)
+                        {
+                            string str = dgvFeature[dgvFeature.Columns.Count - 1, j].Value.ToString();
+                            str = str.Trim() + "\r\n";
+
+                            byte[] rByte = System.Text.Encoding.Default.GetBytes(str.ToCharArray());
+                            fs.Write(rByte, 0, rByte.Length);
+                        }
                     }
+
+                    fs.Dispose();
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    saveTxt.Dispose();
+                }
+                //}
+                MessageBox.Show("已保存数据（仅保存嗜酸性粒细胞和中性粒细胞数据）)，在bin/debug目录下");
             }
             else
-            { 
-                
+            {
+                MessageBox.Show("无数据");
             }
+
+        }
+
+        private void btnSvm_Click(object sender, EventArgs e)
+        {
+            LeukocytesFeature.SVMClassification();
+            MessageBox.Show("svm分类成功,分类结果的图像放在D:/leukocytes目录下");
         }
 
     }

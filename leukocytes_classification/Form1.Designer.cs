@@ -31,7 +31,7 @@
             this.dgvFeature = new System.Windows.Forms.DataGridView();
             this.btnDstTran = new System.Windows.Forms.Button();
             this.btnSaveData = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnSvm = new System.Windows.Forms.Button();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -77,7 +77,7 @@
             // 
             // btnSaveData
             // 
-            this.btnSaveData.Location = new System.Drawing.Point(420, 12);
+            this.btnSaveData.Location = new System.Drawing.Point(299, 12);
             this.btnSaveData.Name = "btnSaveData";
             this.btnSaveData.Size = new System.Drawing.Size(85, 38);
             this.btnSaveData.TabIndex = 2;
@@ -85,14 +85,15 @@
             this.btnSaveData.UseVisualStyleBackColor = true;
             this.btnSaveData.Click += new System.EventHandler(this.btnSaveData_Click);
             // 
-            // button3
+            // btnSvm
             // 
-            this.button3.Location = new System.Drawing.Point(272, 12);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(100, 38);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "SVM Classificatoin";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnSvm.Location = new System.Drawing.Point(451, 12);
+            this.btnSvm.Name = "btnSvm";
+            this.btnSvm.Size = new System.Drawing.Size(100, 38);
+            this.btnSvm.TabIndex = 3;
+            this.btnSvm.Text = "SVM Classificatoin";
+            this.btnSvm.UseVisualStyleBackColor = true;
+            this.btnSvm.Click += new System.EventHandler(this.btnSvm_Click);
             // 
             // Column1
             // 
@@ -146,7 +147,7 @@
             // 
             // Column10
             // 
-            this.Column10.HeaderText = "Feature10";
+            this.Column10.HeaderText = "ImageName";
             this.Column10.Name = "Column10";
             // 
             // Form1
@@ -154,7 +155,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1213, 375);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btnSvm);
             this.Controls.Add(this.btnSaveData);
             this.Controls.Add(this.btnDstTran);
             this.Controls.Add(this.dgvFeature);
@@ -171,7 +172,7 @@
         private System.Windows.Forms.DataGridView dgvFeature;
         private System.Windows.Forms.Button btnDstTran;
         private System.Windows.Forms.Button btnSaveData;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnSvm;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
